@@ -32,8 +32,8 @@ function handleInput(ev) {
     } else if ( result.length > 10) {
         Notify.warning("Too many matches found. Please enter a more specific name.");
     }else if ( result.length < 10 && result > 2) {
-        return refs.countryList.insertAdjacentHTML("beforeend", ) = '';
-             refs.countryInfo.insertAdjacentHTML = '';
+        // return refs.countryList.insertAdjacentHTML("beforeend", ) = '';
+        //      refs.countryInfo.insertAdjacentHTML = '';
       /*Якщо бекенд повернув від 2-х до 10-и країн, під тестовим полем відображається 
       список знайдених країн.
        Кожен елемент списку складається з прапора та назви країни. */          
