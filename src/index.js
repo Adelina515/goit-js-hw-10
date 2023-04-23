@@ -15,8 +15,11 @@ const result = fetchCountries();
 refs.input.addEventListener('input', debounce(handleInput, DEBOUNCE_DELAY));
 
 function handleInput(ev) {
-    const inputValue = ev.currentTarget.value.trim();
-    fetchCountries(inputValue);
+    const inputValue = refs.input.value.trim();
+    fetchCountries(inputValue).then(({ name }) => {
+        console.log(name);
+        if (name.length === 0) throw new Error ('No data!')
+    }).catch(onError);
     if (inputValue === 0) {
         refs.countryList.innerHTML = '';
         refs.countryInfo.innerHTML = '';
@@ -26,11 +29,18 @@ function handleInput(ev) {
     }else if ( result.length < 10 && result > 2) {
         return refs.countryList.insertAdjacentHTML("beforeend", ) = '';
              refs.countryInfo.insertAdjacentHTML = '';
-                
+      /*Якщо бекенд повернув від 2-х до 10-и країн, під тестовим полем відображається 
+      список знайдених країн.
+       Кожен елемент списку складається з прапора та назви країни. */          
     }else if ( result.length === 1) {
         return 
+        /*Якщо результат запиту - це масив з однією країною, в інтерфейсі відображається 
+        розмітка картки з даними про країну: прапор, назва, столиця, населення і мови. */
     }
 
+}
+function onError(err) {
+    console.error(err)
 }
 function createCountryInfo(country) {
      
