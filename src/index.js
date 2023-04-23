@@ -18,7 +18,12 @@ function handleInput(ev) {
     const inputValue = refs.input.value.trim();
     fetchCountries(inputValue).then(({ name }) => {
         console.log(name);
-        if (name.length === 0) throw new Error ('No data!')
+        if (name.length === 0) throw new Error('No data!')
+        
+        name.reduce((acc) => {
+
+        })
+
     }).catch(onError);
     if (inputValue === 0) {
         refs.countryList.innerHTML = '';
