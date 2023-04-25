@@ -16,24 +16,24 @@ refs.input.addEventListener('input', debounce(handleInput, DEBOUNCE_DELAY));
 
 function handleInput(ev) {
     const inputValue = refs.input.value.trim();
-    fetchCountries(inputValue).then(({ names }) => {
+   const result = fetchCountries(inputValue).then(({ names }) => {
         console.log(names);
-        if (names.length === 0) throw new Error('No data!')
+        if (result.length === 0) throw new Error('No data!')
     }).catch(onError);
     if (inputValue === 0) {
         refs.countryList.innerHTML = '';
         refs.countryInfo.innerHTML = '';
         return;
-    } else if ( names.length > 10) {
+    } else if ( result.length > 10) {
         Notify.warning("Too many matches found. Please enter a more specific name.");
-    }else if ( names.length < 10 && names > 2) {
-        return refs.countryList.insertAdjacentHTML("beforeend", createMarkupList());
+    }else if ( result.length < 10 && result > 2) {
+        return refs.countryList.insertAdjacentHTML("beforeend", createMarkupList({name, flags}));
         
       /*Якщо бекенд повернув від 2-х до 10-и країн, під тестовим полем відображається 
       список знайдених країн.
        Кожен елемент списку складається з прапора та назви країни. */          
-    }else if ( names.length === 1) {
-        return refs.countryInfo.insertAdjacentHTML("beforeend", createMarkup());
+    }else if ( result.length === 1) {
+        return refs.countryInfo.insertAdjacentHTML("beforeend", createMarkup({name, flags, capital, population, languages}));
         /*Якщо результат запиту - це масив з однією країною, в інтерфейсі відображається 
         розмітка картки з даними про країну: прапор, назва, столиця, населення і мови. */
     }
