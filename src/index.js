@@ -26,7 +26,7 @@ function handleInput(ev) {
         return;
     } else if ( result.length > 10) {
         Notify.warning("Too many matches found. Please enter a more specific name.");
-    }else if ( result.length < 10 && result > 2) {
+    }else if ( result.length < 10 && result.length > 2) {
         return refs.countryList.insertAdjacentHTML("beforeend", createMarkupList({name, flags}));
         
       /*Якщо бекенд повернув від 2-х до 10-и країн, під тестовим полем відображається 
