@@ -16,10 +16,10 @@ refs.input.addEventListener('input', debounce(handleInput, DEBOUNCE_DELAY));
 
 function handleInput(ev) {
     const inputValue = refs.input.value.trim();
-   const result = fetchCountries(inputValue).then(({ names }) => {
-        console.log(names);
-        if (result.length === 0) throw new Error('No data!')
-    }).catch(onError);
+   const result = fetchCountries(inputValue).then(response => {
+        console.log(response);
+        if (response.length === 0) throw new Error('No data!')
+   }).catch(onError);
     if (inputValue === 0) {
         refs.countryList.innerHTML = '';
         refs.countryInfo.innerHTML = '';
@@ -29,9 +29,11 @@ function handleInput(ev) {
     }else if ( result.length < 10 && result.length > 2) {
         return refs.countryList.insertAdjacentHTML("beforeend", createMarkupList({name, flags}));
         
-      /*Якщо бекенд повернув від 2-х до 10-и країн, під тестовим полем відображається 
-      список знайдених країн.
-       Кожен елемент списку складається з прапора та назви країни. */          
+      /*
+       ви намагаєтесь отримати властивість length від змінної result, яка є об'єктом Promise, 
+       а не масивом, тому у вас виводить андефайнд. Вам потрібно використ. даний масив у ф-ції 
+       handleInput після того, як він буде отриманий з fetchCountries. Для цього вам потрібно 
+       додати код обробки результату запиту в блоці then відповідно до ваших потреб */          
     }else if ( result.length === 1) {
         return refs.countryInfo.insertAdjacentHTML("beforeend", createMarkup({name, flags, capital, population, languages}));
         /*Якщо результат запиту - це масив з однією країною, в інтерфейсі відображається 
@@ -47,11 +49,11 @@ function createMarkupList({name, flags}) {
 function createMarkup({name, flags, capital, population, languages}) {
 
     return`<div class="country-inform">
-    <h2 class="country-name">${name.official}</h2>
+    <h2 class="country-name">${name.official}name</h2>
     <img src = ${flags.svg} alt='flags of ${name.official}' width=60 height=40/>
-    <p class="country-capital"${capital}</p>
-    <p class="country-population"${population}</p>
-    <p class="country-languages"${languages}</p>
+    <p class="country-capital"><span>capital:</span>${capital}</p>
+    <p class="country-population"><span>population:</span>${population}</p>
+    <p class="country-languages"><span>languages:</span>${languages}</p>
     </div> `
 }
 function onError(err) {
