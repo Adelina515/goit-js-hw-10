@@ -40,9 +40,10 @@ function handleInput(ev) {
 }
 
 function createMarkupList({ name, flags }) {
-    if (name) {
-       return `<img src = ${flags.svg} alt='flags of ${name.official}' width=60 height=40/>` 
+    if (!name) {
+        return;
     }
+    return `<img src = ${flags.svg} alt='flags of ${name.official}' width=60 height=40/>` 
 }
 
 function createMarkup(country) {
