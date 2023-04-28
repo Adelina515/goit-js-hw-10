@@ -34,7 +34,7 @@ function handleInput(ev) {
            Notify.info("Too many matches found. Please enter a more specific name.");    
      })
          .catch(err => {
-         if (err.message === '404') {
+         if (err.status === '404') {
         Notify.warning('Oops, there is no country with that name');
         refs.countryList.innerHTML = '';
         refs.countryInfo.innerHTML = '';
