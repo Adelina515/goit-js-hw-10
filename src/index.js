@@ -5,10 +5,10 @@ import { Notify } from 'notiflix/build/notiflix-notify-aio';
 
 const DEBOUNCE_DELAY = 300;
 const refs = {
- input: document.getElementById('search-box'),
- countryList: document.querySelector('.country-list'),
- countryInfo: document.querySelector('.country-info'),
-}
+    input: document.getElementById('search-box'),
+    countryList: document.querySelector(".country-list"),
+    countryInfo: document.querySelector(".country-info"),
+};
 
 
 
@@ -16,49 +16,62 @@ refs.input.addEventListener('input', debounce(handleInput, DEBOUNCE_DELAY));
 
 function handleInput(ev) {
     const inputValue = refs.input.value.trim();
-   const result = fetchCountries(inputValue).then(country => {
-        console.log(country);
-       if (country.length === 0) {
-           throw new Error('No data!')
-       } else if ( result.length > 10) {
-        Notify.warning("Too many matches found. Please enter a more specific name.");
-    }else if ( result.length < 10 && result.length > 2) {
-        return refs.countryList.insertAdjacentHTML("beforeend", createMarkupList(name, flags));
-               
-    }else if ( result.length === 1) {
-        return refs.countryInfo.insertAdjacentHTML("beforeend", createMarkup(country));
-        /*Якщо результат запиту - це масив з однією країною, в інтерфейсі відображається 
-        розмітка картки з даними про країну: прапор, назва, столиця, населення і мови. */
-    } else if (inputValue === 0) {
+    fetchCountries(inputValue)
+        .then(country => {
+         console.log(country);
+         if (country.length === 1) {
+           refs.countryList.innerHTML = '';
+           const markup = createMarkup(country);
+           refs.countryInfo.insertAdjacentHTML("beforeend", markup);
+           return;
+       }else if (country.length < 10) {
+           refs.countryInfo.innerHTML = '';
+           const markup = createMarkupList(country);
+           refs.countryList.insertAdjacentHTML("beforeend", markup); 
+           return;  
+       }  
+         refs.countryList.innerHTML = '';
+           Notify.info("Too many matches found. Please enter a more specific name.");    
+     })
+         .catch(err => {
+         if (err.message === '404') {
+        Notify.warning('Oops, there is no country with that name');
         refs.countryList.innerHTML = '';
         refs.countryInfo.innerHTML = '';
-        return;
-    }     
-   }).catch(onError);
-   
-
+      }
+         });
 }
 
-function createMarkupList({ name, flags }) {
-    if (!name) {
-        return;
-    }
-    return `<img src = ${flags.svg} alt='flags of ${name.official}' width=60 height=40/>` 
+function createMarkupList(country) {
+     return country
+    .map(el => {
+      return `
+          <li class="country-item">
+          <div class="country-wrapper">
+          <img src="${el.flags.png}" alt="${el.flags.alt}" width="100" height="50" />
+          <p class="country-desc">${el.name.official}</p>
+          </div>
+          </li>
+          `;
+           })
+    .join('');
 }
 
 function createMarkup(country) {
-    return country.map(({name, flags, capital, population, languages}) =>`<div class="country-inform">
-    <h2 class="country-name">${name.official}name</h2>
-    <img src = ${flags.svg} alt='flags of ${name.official}' width=60 height=40/>
-    <p class="country-capital"><span>capital:</span>${capital}</p>
-    <p class="country-population"><span>population:</span>${population}</p>
-    <p class="country-languages"><span>languages:</span>${Object.values(languages).join(",")}</p>
-    </div> `).join("")
+    return country
+        .map(el => {
+        return `<div class="country-inform">
+    <div class=“country-wrapper”>
+        <img class="country-img" src="${el.flags.png}" alt="${el.flags.alt}" width="100" height="50" />
+        <h2 class="country-title">${el.name.official}</h2>
+    </div>
+    <p class="country-capital">capital:<span>${el.capital}</span></p>
+    <p class="country-population">population:<span>${el.population}</span></p>
+    <p class="country-languages">languages:<span>${Object.values(el.languages)}</span></p>
+    </div> `;
+}).join("")
 }
-function onError(err) {
-    console.error(err)
-    Notify.warning("Oops, there is no country with that name");
-}
+
  
 
 
